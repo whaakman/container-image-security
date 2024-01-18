@@ -6,10 +6,7 @@
 name: trivy
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ "main" ]
   schedule:
     - cron: '24 6 * * 1'
@@ -42,15 +39,3 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          
-      - name: Docker Login
-        uses: azure/docker-login@v1
-        with:
-          login-server: contoso.azurecr.io
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-      - run: |
-          docker tag docker.io/my-organization/my-app:${{ github.sha }} contoso.azurecr.io/my-app:${{ github.sha }}
-          docker build . -t contoso.azurecr.io/k8sdemo:${{ github.sha }}
-          docker push contoso.azurecr.io/k8sdemo:${{ github.sha }}
-
